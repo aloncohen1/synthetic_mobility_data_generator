@@ -14,6 +14,12 @@ ARCGIS_REST_URL = 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/serv
 
 def get_anchors_df(bbox):
 
+    """
+    get bbox and return pandas df of buildings locations (the query returns maximum of 2000 records)
+    :param bbox:
+    :return:
+    """
+
     anchors_df = gpd.read_file(ARCGIS_REST_URL % bbox)
 
     anchors_df['lat'] = anchors_df['geometry'].centroid.y
@@ -24,6 +30,16 @@ def get_anchors_df(bbox):
 
 
 def get_kaggle_pois_data(kaggle_username, kaggle_key, export_path, bbox=None):
+
+    """
+    downloads public pois data from kaggle and return pandas object of pois
+    to generate kaggle username and key, see here - https://www.kaggle.com/docs/api
+    :param kaggle_username: your kaggle username
+    :param kaggle_key: your kaggle key
+    :param export_path: path to export the data
+    :param bbox: if passed, will filter to pois within bbox only
+    :return:
+    """
 
     os.system('mkdir ~/.kaggle')
     os.system('touch ~/.kaggle/kaggle.json')
@@ -100,11 +116,11 @@ def isin_box(lat, lng, bounds):
 def get_osmnx_graph(bbox=None, geo_str=None, import_gpickle_path=None, export_path=None):
 
     """
-
-    :param bbox:
-    :param geo_str:
-    :param import_gpickle_path:
-    :param export_path:
+    will query osm for all roads by bbox or geo_str and return MultiDiGraph object
+    :param bbox: bounding box to query
+    :param geo_str: name of the are, for example - "Rhode Island",'Massachusetts'
+    :param import_gpickle_path: if passed, will load gpickle
+    :param export_path: local path to export G pickle
     :return:
     """
 
