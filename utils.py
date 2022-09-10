@@ -6,6 +6,8 @@ import geopandas as gpd
 import osmnx as ox
 import networkx as nx
 from shapely.geometry import Point
+import logging
+from keplergl import KeplerGl
 
 ox.config(use_cache=True, log_console=True)
 
@@ -20,13 +22,45 @@ def get_anchors_df(bbox):
     :return:
     """
 
+    logging.info('query arcgis rest url - START')
+
     anchors_df = gpd.read_file(ARCGIS_REST_URL % bbox)
 
     anchors_df['lat'] = anchors_df['geometry'].centroid.y
     anchors_df['lng'] = anchors_df['geometry'].centroid.x
     anchors_df['area'] = anchors_df.area
 
+    logging.info('query arcgis rest url - END')
+
     return anchors_df
+
+
+def export_timeline_viz(signals, timeline, device_id, export_path):
+
+    """
+    Will generate an kepler.gl html file with device signals and timeline
+    :param signals: signals df (locations and timestamp)
+    :param timeline: timeline_df locations and times intervals
+    :param device_id: unique device_id
+    :param export_path: local path for export
+    :return:
+    """
+
+
+
+    with open('../kepler_config.json') as json_file:
+        config = json.load(json_file)
+
+    config['config']['mapState']['latitude'] = signals['lat1'].mean()
+    config['config']['mapState']['longitude'] = signals['lng1'].mean()
+
+    kepler_map = KeplerGl(data={"timeline": timeline,
+                                "signals": signals}, config=config)
+
+
+    file_name = f'{device_id}.html'
+
+    kepler_map.save_to_html(file_name=os.path.join(export_path, file_name))
 
 
 def get_kaggle_pois_data(kaggle_username, kaggle_key, export_path, bbox=None):
@@ -40,6 +74,8 @@ def get_kaggle_pois_data(kaggle_username, kaggle_key, export_path, bbox=None):
     :param bbox: if passed, will filter to pois within bbox only
     :return:
     """
+
+    logging.info('getting pois data from Kaggle - START')
 
     os.system('mkdir ~/.kaggle')
     os.system('touch ~/.kaggle/kaggle.json')
@@ -89,6 +125,9 @@ def get_kaggle_pois_data(kaggle_username, kaggle_key, export_path, bbox=None):
     pois_df['id'] = pois_df.index
     pois_df['geometry'] = pois_df.apply(lambda x: Point(x['lng'], x['lat']), axis=1)
     pois_df = gpd.GeoDataFrame(pois_df)
+
+    logging.info('getting pois data from Kaggle - END')
+
     return pois_df
 
 
