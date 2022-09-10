@@ -48,14 +48,20 @@ def export_timeline_viz(signals, timeline, device_id, export_path):
 
 
     with open('./kepler_config.json') as json_file:
-        #config = json.loads(json.load(json_file))
+
         config = json.load(json_file)
 
     config['config']['mapState']['latitude'] = signals['lat1'].mean()
     config['config']['mapState']['longitude'] = signals['lng1'].mean()
 
-    kepler_map = KeplerGl(data={"timeline": timeline.astype(str),
-                                "signals": signals.astype(str)}, config=config)
+    signals['timestamp'] = signals['timestamp'].astype(str)
+
+    timeline['start_time'] = timeline['start_time'].astype(str)
+    timeline['end_time'] = timeline['end_time'].astype(str)
+
+    kepler_map = KeplerGl(data={"timeline": timeline,
+                                "signals": signals},
+                          config=config)
 
 
     file_name = f'{device_id}.html'
