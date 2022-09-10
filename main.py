@@ -27,7 +27,7 @@ def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_
 
     bbox = ox.utils_geo.bbox_from_point((lat, lng), radius)
     anchors_df = get_anchors_df(bbox)
-    pois_df = get_kaggle_pois_data(kaggle_username, kaggle_key, export_path)
+    pois_df = get_kaggle_pois_data(kaggle_username, kaggle_key, export_path, bbox=bbox)
 
     if not graph:
         graph = get_osmnx_graph(bbox)
