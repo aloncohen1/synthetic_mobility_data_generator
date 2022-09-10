@@ -142,7 +142,7 @@ def get_osmnx_graph(bbox=None, geo_str=None, import_gpickle_path=None, export_pa
 
     if export_path:
         file_name = datetime.datetime.now().isoformat() + '_G.gpickle'
-        nx.write_gpickle(G, os.path.join({export_path}, {file_name}))
+        nx.write_gpickle(G, os.path.join(export_path, file_name))
 
     return G
 
