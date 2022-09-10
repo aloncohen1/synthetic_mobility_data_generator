@@ -18,6 +18,8 @@ from geolib import geohash
 from shapely.geometry import LineString, Point, MultiLineString
 from shapely.ops import transform, linemerge, nearest_points, snap
 
+ox.config(use_cache=True, log_console=True)
+
 
 ARCGIS_REST_URL = 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/MSBFP2/FeatureServer/0/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry={"ymax":%s,"ymin":%s,"xmax":%s,"xmin":%s,"spatialReference":{"wkid":4326}}&geometryType=esriGeometryEnvelope&outSR=4326'
 
@@ -33,7 +35,7 @@ def get_buildings_polygons(bbox):
     return anchors_polygons
 
 
-def get_kaggle_pois_data(kaggle_username, kaggle_key, export_path, bbox):
+def get_kaggle_pois_data(kaggle_username, kaggle_key, export_path, bbox=None):
 
     os.system('mkdir ~/.kaggle')
     os.system('touch ~/.kaggle/kaggle.json')
@@ -78,7 +80,8 @@ def get_kaggle_pois_data(kaggle_username, kaggle_key, export_path, bbox):
 
     pois_df = pd.concat(pois_dfs, ignore_index=True)
     pois_df = pois_df.dropna(subset=['lat', 'lng'], how='any')
-    pois_df = pois_df[pois_df.apply(lambda x: isin_box(x['lat'], x['lng'], bbox), axis=1)]
+    if bbox:
+        pois_df = pois_df[pois_df.apply(lambda x: isin_box(x['lat'], x['lng'], bbox), axis=1)]
     pois_df['id'] = pois_df.index
     pois_df['geometry'] = pois_df.apply(lambda x: Point(x['lng'], x['lat']), axis=1)
     pois_df = gpd.GeoDataFrame(pois_df)
@@ -104,3 +107,40 @@ def isin_box(lat, lng, bounds):
             within = True
 
     return within
+
+
+def get_osmnx_graph(bbox=None, geo_str=None, import_gpickle_path=None, export_path=None):
+
+    """
+
+    :param bbox:
+    :param geo_str:
+    :param import_gpickle_path:
+    :param export_path:
+    :return:
+    """
+
+    assert bbox or import_gpickle_path, "function massed receive bbox, geo_str import_gpickle_path"
+
+    assert not (bbox and geo_str) or (bbox and import_gpickle_path) or (geo_str, import_gpickle_path), "please pass only one param of 'bbox' ,'geo_str', 'import_gpickle_path'"
+
+    G = None
+
+    if bbox:
+        G = ox.graph_from_bbox(*bbox, network_type="drive", retain_all=True, truncate_by_edge=True)
+
+    elif geo_str:
+        G = ox.graph_from_place(geo_str, network_type="drive", retain_all=True, truncate_by_edge=True)
+
+    elif import_gpickle_path:
+        G = nx.read_gpickle(import_gpickle_path)
+
+
+    G = ox.speed.add_edge_speeds(G)
+    G = ox.speed.add_edge_travel_times(G)
+
+
+    if export_path:
+        file_name = datetime.datetime.now().isoformat() + '_G.gpickle'
+        nx.write_gpickle(G, os.path.join(f"{export_path},{file_name}"))
+
