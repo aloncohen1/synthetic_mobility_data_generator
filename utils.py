@@ -47,8 +47,7 @@ def export_timeline_viz(signals, timeline, device_id, export_path):
     """
 
 
-
-    with open('../kepler_config.json') as json_file:
+    with open('./kepler_config.json') as json_file:
         config = json.loads(json.load(json_file))
 
     config['config']['mapState']['latitude'] = signals['lat1'].mean()
