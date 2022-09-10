@@ -1,38 +1,26 @@
-import matplotlib.pyplot as plt
 import os
 import json
 import datetime
 import pandas as pd
-import numpy as np
-from collections import defaultdict
-from datetime import timedelta
-from functools import partial
-
 import geopandas as gpd
 import osmnx as ox
 import networkx as nx
-import taxicab as tc
-import pyproj
-from geolib import geohash
-
-from shapely.geometry import LineString, Point, MultiLineString
-from shapely.ops import transform, linemerge, nearest_points, snap
+from shapely.geometry import Point
 
 ox.config(use_cache=True, log_console=True)
-
 
 ARCGIS_REST_URL = 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/MSBFP2/FeatureServer/0/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry={"ymax":%s,"ymin":%s,"xmax":%s,"xmin":%s,"spatialReference":{"wkid":4326}}&geometryType=esriGeometryEnvelope&outSR=4326'
 
 
-def get_buildings_polygons(bbox):
+def get_anchors_df(bbox):
 
-    anchors_polygons = gpd.read_file(ARCGIS_REST_URL % bbox)
+    anchors_df = gpd.read_file(ARCGIS_REST_URL % bbox)
 
-    anchors_polygons['lat'] = anchors_polygons['geometry'].centroid.y
-    anchors_polygons['lng'] = anchors_polygons['geometry'].centroid.x
-    anchors_polygons['area'] = anchors_polygons.area
+    anchors_df['lat'] = anchors_df['geometry'].centroid.y
+    anchors_df['lng'] = anchors_df['geometry'].centroid.x
+    anchors_df['area'] = anchors_df.area
 
-    return anchors_polygons
+    return anchors_df
 
 
 def get_kaggle_pois_data(kaggle_username, kaggle_key, export_path, bbox=None):
