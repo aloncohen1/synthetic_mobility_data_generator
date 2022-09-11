@@ -2,4 +2,4 @@ geopandas
 osmnx
 taxicab
 geolib
-keplergl
+fire
