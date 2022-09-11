@@ -13,6 +13,15 @@ ox.config(use_cache=True, log_console=True)
 
 ARCGIS_REST_URL = 'https://services.arcgis.com/P3ePLMYs2RVChkJx/ArcGIS/rest/services/MSBFP2/FeatureServer/0/query?f=json&returnGeometry=true&spatialRel=esriSpatialRelIntersects&geometry={"ymax":%s,"ymin":%s,"xmax":%s,"xmin":%s,"spatialReference":{"wkid":4326}}&geometryType=esriGeometryEnvelope&outSR=4326'
 
+US_GEO_CELLS = (
+    "bk", "bs", "bu", "b7", "be", "bg", "b6", "bd", "bf", "b3",
+    "b9", "bc", "c0", "c1", "c2", "c8", "cb", "f0", "f2", "f8",
+    "fb", "9p", "9r", "9x", "9z", "dp", "dr", "dx", "9n", "9q",
+    "9w", "9y", "dn", "dq", "9m", "9t", "9v", "9k", "9s", "9u",
+    "dj", "dm", "dh", "dk", "8k", "8s", "87", "8e", "b1", "c4",
+    "b4"
+)
+
 
 def get_anchors_df(bbox):
 
