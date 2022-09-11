@@ -2,17 +2,15 @@ import osmnx as ox
 import os
 import logging
 import fire
-
-from utils import get_anchors_df, get_kaggle_pois_data, get_osmnx_graph, export_timeline_viz
+from geolib import geohash
+from utils import get_anchors_df, get_kaggle_pois_data, get_osmnx_graph, export_timeline_viz, US_GEO_CELLS
 from timeline_generator import Device
-
-
 
 
 def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_username, kaggle_key, graph=None, viz_timeline=False):
 
     """
-    will generate signals timelines for n devices
+    will generate signals timelines for n devices (supports US only)
     :param lat: latitude of the synthetic timeline location
     :param lng: longitude of the synthetic timeline location
     :param radius: radius in meters
@@ -26,6 +24,8 @@ def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_
     :param viz_timeline: if True, will export Kepler with device timeline
     :return:
     """
+
+    assert geohash.encode(lat, lng,2) not in US_GEO_CELLS, f"function supports US only, {lat,lng} is out bounds"
 
     os.system(f'mkdir {export_path}/timelines')
     os.system(f'mkdir {export_path}/signals')
@@ -47,10 +47,12 @@ def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_
       device_anchors_df = anchors_df[anchors_df['BlockgroupID']!=home_info['BlockgroupID']].sample(10) # pick 10 anchors from other block groups
 
       device = Device(i ,graph, home_info, work_info, device_anchors_df, pois_df) # initiate device object
+
       signals = device.generate_signals_df(start_time, end_time) # generate signals timeline
-      signals.to_csv(os.path.join(f'{export_path}/signals', f'{i}.csv'),index=False) # save signals data
+      signals.to_csv(os.path.join(f'{export_path}/signals', f'signals_{i}.csv'),index=False) # save signals data
+
       timeline = device.device_timeline
-      timeline.to_csv(os.path.join(f'{export_path}/timelines', f'{i}.csv'),index=False) # save timeline data
+      timeline.to_csv(os.path.join(f'{export_path}/timelines', f'timeline_{i}.csv'),index=False) # save timeline data
 
       if viz_timeline:
           export_timeline_viz(signals, timeline, i , export_path)
