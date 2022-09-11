@@ -1,5 +1,6 @@
 import pandas as pd
 import numpy as np
+import logging
 from datetime import timedelta
 import taxicab as tc
 
@@ -94,7 +95,7 @@ class Device():
                 self.device_routs[(orig, dest)] = route_geo
                 self.device_routs[(dest, orig)] = self.reverse_geom(route_geo)
             except Exception as e:
-                print(f'faild to create route! {orig} -> {dest} reason: {e}')
+                logging.info(f'faild to create route! {orig} -> {dest} reason: {e}')
                 self.device_routs[(orig, dest)] = 'no_rout'
                 self.device_routs[(dest, orig)] = 'no_rout'
 
