@@ -25,7 +25,7 @@ def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_
     :return:
     """
 
-    assert geohash.encode(lat, lng,2) not in US_GEO_CELLS, f"function supports US only, {lat,lng} is out bounds"
+    assert geohash.encode(lat, lng,2) in US_GEO_CELLS, f"function supports US only, {lat,lng} is out bounds"
 
     os.system(f'mkdir {export_path}/timelines')
     os.system(f'mkdir {export_path}/signals')
