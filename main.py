@@ -1,8 +1,13 @@
 import osmnx as ox
 import os
+import logging
+import warnings
+import fire
 
 from utils import get_anchors_df, get_kaggle_pois_data, get_osmnx_graph, export_timeline_viz
 from timeline_generator import Device
+
+
 
 
 def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_username, kaggle_key, graph=None, viz_timeline=False):
@@ -51,4 +56,11 @@ def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_
       if viz_timeline:
           export_timeline_viz(signals, timeline, i , export_path)
 
-      print(f'done with device {i}')
+      logging.info(f'done generating device {i} signals')
+
+
+
+if __name__ == "__main__":
+    logging.basicConfig(level=logging.INFO)
+    warnings.filterwarnings("ignore")
+    fire.Fire(main)
