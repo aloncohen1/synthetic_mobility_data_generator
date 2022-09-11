@@ -1,7 +1,6 @@
 import osmnx as ox
 import os
 import logging
-import warnings
 import fire
 
 from utils import get_anchors_df, get_kaggle_pois_data, get_osmnx_graph, export_timeline_viz
@@ -62,5 +61,5 @@ def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.INFO)
-    warnings.filterwarnings("ignore")
+    logging.captureWarnings(True)
     fire.Fire(main)
