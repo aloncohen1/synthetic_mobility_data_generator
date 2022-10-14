@@ -3,6 +3,11 @@ import os
 import logging
 import fire
 from geolib import geohash
+
+import warnings
+from shapely.errors import ShapelyDeprecationWarning
+from pandas.core.common import SettingWithCopyWarning
+
 from utils import get_anchors_df, get_kaggle_pois_data, get_osmnx_graph, export_timeline_viz, US_GEO_CELLS
 from timeline_generator import Device
 
@@ -62,6 +67,11 @@ def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_
 
 
 if __name__ == "__main__":
+
     logging.basicConfig(level=logging.INFO)
-    logging.captureWarnings(True)
+
+    warnings.filterwarnings(action="ignore", category=ShapelyDeprecationWarning)
+    warnings.simplefilter(action='ignore', category=FutureWarning)
+    warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
+
     fire.Fire(main)
