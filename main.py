@@ -69,9 +69,6 @@ def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_
 if __name__ == "__main__":
 
     logging.basicConfig(level=logging.INFO)
-
-    warnings.filterwarnings(action="ignore", category=ShapelyDeprecationWarning)
-    warnings.simplefilter(action='ignore', category=FutureWarning)
-    warnings.simplefilter(action="ignore", category=SettingWithCopyWarning)
+    warnings.filterwarnings('ignore')
 
     fire.Fire(main)
