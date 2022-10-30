@@ -5,8 +5,6 @@ import fire
 from geolib import geohash
 
 import warnings
-from shapely.errors import ShapelyDeprecationWarning
-from pandas.core.common import SettingWithCopyWarning
 
 from utils import get_anchors_df, get_kaggle_pois_data, get_osmnx_graph, export_timeline_viz, US_GEO_CELLS
 from timeline_generator import Device
