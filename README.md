@@ -1,9 +1,10 @@
+# Introduction
 Mobility data is the geographic locations of a device, passively produced through normal activity. It has important applications ranging from transportation planning to migration forecasting. As mobility data is rare and hard to collect, researchers have begun exploring solutions for synthetically generating it.
-In this article, I will discuss a naive solution for generating synthetic mobility data. This synthetic data can be used for research purposes and for training / fine-tuning algorithms.
-The code can be found here and you can use this colab notebook to try it yourself.
 
 This repo sugest a naive solution for generating synthetic mobility data. This synthetic data can be used for research purposes and for training / fine-tuning algorithms.
 The code can be found here and you can use this colab notebook to try it yourself.
+
+Use this [this colab notebook](https://colab.research.google.com/drive/1b7Plly940-GYgjNdP0C-klabDyPiMfUg?usp=sharing) to try it yourself
 
 ![Alt Text](https://media.giphy.com/media/74I5JQiRwHMikGT8bO/giphy.gif) 
 
