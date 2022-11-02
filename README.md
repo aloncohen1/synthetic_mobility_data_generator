@@ -17,7 +17,7 @@ pip install -r requirements.py
 
 # Run
 ```
-# examples for params
+# params for examples
 lat = 30.351043
 lng = -97.731965
 radius = 2000
