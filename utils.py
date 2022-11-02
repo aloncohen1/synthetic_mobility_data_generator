@@ -23,7 +23,7 @@ US_GEO_CELLS = (
 )
 
 
-def get_anchors_df(bbox):
+def get_residence_df(bbox):
 
     """
     get bbox and return pandas df of buildings locations (the query returns maximum of 2000 records)
@@ -33,24 +33,24 @@ def get_anchors_df(bbox):
 
     logging.info('query arcgis rest url - START')
 
-    anchors_df = gpd.read_file(ARCGIS_REST_URL % bbox)
+    residence_df = gpd.read_file(ARCGIS_REST_URL % bbox)
 
-    anchors_df['lat'] = anchors_df['geometry'].centroid.y
-    anchors_df['lng'] = anchors_df['geometry'].centroid.x
-    anchors_df['area'] = anchors_df.area
+    residence_df['lat'] = residence_df['geometry'].centroid.y
+    residence_df['lng'] = residence_df['geometry'].centroid.x
+    residence_df['area'] = residence_df.area
 
     logging.info('query arcgis rest url - END')
 
-    return anchors_df
+    return residence_df
 
 
-def export_timeline_viz(signals, timeline, device_id, export_path):
+def export_timeline_viz(signals, timeline, mobile_id, export_path):
 
     """
-    Will generate an kepler.gl html file with device signals and timeline
+    Will generate an kepler.gl html file with mobile device signals and timeline
     :param signals: signals df (locations and timestamp)
     :param timeline: timeline_df locations and times intervals
-    :param device_id: unique device_id
+    :param mobile_id: unique mobile_id
     :param export_path: local path for export
     :return:
     """
@@ -73,7 +73,7 @@ def export_timeline_viz(signals, timeline, device_id, export_path):
                           config=config)
 
 
-    file_name = f'{device_id}.html'
+    file_name = f'{mobile_id}.html'
 
     kepler_map.save_to_html(file_name=os.path.join(export_path, file_name))
 
