@@ -155,7 +155,7 @@ class MobilePhone:
 
         end_time = start_time + timedelta(minutes=int(np.random.choice(range(15, 50))))
 
-        n_points = np.round((end_time - start_time).total_seconds() / sampling_rate)
+        n_points = round((end_time - start_time).total_seconds() / sampling_rate)
 
         noise_list = np.linspace(0.9999999, 1.000001)  # add noise to points
         signal_time = start_time - timedelta(seconds=int(np.random.choice([5, 10, 15])))
