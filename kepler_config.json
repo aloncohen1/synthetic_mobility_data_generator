@@ -285,17 +285,17 @@
                 "format": null
               },
               {
-                "name": "device_type",
+                "name": "mobile_type",
                 "format": null
               },
               {
-                "name": "device_id",
+                "name": "mobile_id",
                 "format": null
               }
             ],
             "timeline": [
               {
-                "name": "visit_id",
+                "name": "stay_id",
                 "format": null
               },
               {
