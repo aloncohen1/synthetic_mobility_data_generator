@@ -6,25 +6,25 @@ from geolib import geohash
 
 import warnings
 
-from utils import get_anchors_df, get_kaggle_pois_data, get_osmnx_graph, export_timeline_viz, US_GEO_CELLS
-from timeline_generator import Device
+from utils import get_residence_df, get_kaggle_pois_data, get_osmnx_graph, export_timeline_viz, US_GEO_CELLS
+from timeline_generator import MobilePhone
 
 
-def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_username, kaggle_key, graph=None, viz_timeline=False):
+def main(lat, lng, radius, n_mobiles, start_date, end_date, export_path, kaggle_username, kaggle_key, graph=None, viz_timeline=False):
 
     """
-    will generate signals timelines for n devices (supports US only)
+    will generate signals timelines for n mobile devices (supports US only)
     :param lat: latitude of the synthetic timeline location
     :param lng: longitude of the synthetic timeline location
     :param radius: radius in meters
-    :param n_devices: # of devices with synthetic timeline to generate
-    :param start_time: timeline start time - YYYY-MM-DD
-    :param end_time: timeline end time - YYYY-MM-DD
+    :param n_mobiles: # of mobile devices with synthetic timeline to generate
+    :param start_date: timeline start time - YYYY-MM-DD
+    :param end_date: timeline end time - YYYY-MM-DD
     :param export_path: export path to save output data
     :param kaggle_username: your kaggle username
     :param kaggle_key: your kaggle key
     :param graph: MultiDiGraph object
-    :param viz_timeline: if True, will export Kepler with device timeline
+    :param viz_timeline: if True, will export Kepler with mobile_phone timeline
     :return:
     """
 
@@ -36,31 +36,31 @@ def main(lat, lng, radius, n_devices, start_time, end_time, export_path, kaggle_
         os.system(f'mkdir {export_path}/viz')
 
     bbox = ox.utils_geo.bbox_from_point((lat, lng), radius)
-    anchors_df = get_anchors_df(bbox)
+    residence_df = get_residence_df(bbox)
     pois_df = get_kaggle_pois_data(kaggle_username, kaggle_key, export_path, bbox=bbox)
 
     if not graph:
         graph = get_osmnx_graph(bbox)
 
-    for i in range(0, n_devices):
+    for i in range(0, n_mobiles):
 
-      home_info = anchors_df.sample(1).to_dict(orient='records')[0] # pick random home location
+      home_info = residence_df.sample(1).to_dict(orient='records')[0] # pick random home location
       work_info = pois_df.sample(1).to_dict(orient='records')[0] # pick random work location
 
-      device_anchors_df = anchors_df[anchors_df['BlockgroupID']!=home_info['BlockgroupID']].sample(10) # pick 10 anchors from other block groups
+      mobile_residence_df = residence_df[residence_df['BlockgroupID']!=home_info['BlockgroupID']].sample(10) # pick 10 buildings from other block groups
 
-      device = Device(i ,graph, home_info, work_info, device_anchors_df, pois_df) # initiate device object
+      mobile_phone = MobilePhone(i, graph, home_info, work_info, mobile_residence_df, pois_df) # initiate CellPhone object
 
-      signals = device.generate_signals_df(start_time, end_time) # generate signals timeline
+      signals = mobile_phone.generate_signals_df(start_date, end_date) # generate signals timeline
       signals.to_csv(os.path.join(f'{export_path}/signals', f'signals_{i}.csv'),index=False) # save signals data
 
-      timeline = device.device_timeline
+      timeline = mobile_phone.mobile_timeline
       timeline.to_csv(os.path.join(f'{export_path}/timelines', f'timeline_{i}.csv'),index=False) # save timeline data
 
       if viz_timeline:
           export_timeline_viz(signals, timeline, i , export_path)
 
-      logging.info(f'done generating device {i} signals')
+      logging.info(f'done generating mobile_phone {i} signals')
 
 
 
